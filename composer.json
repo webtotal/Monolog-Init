@@ -1,7 +1,7 @@
 {
 	"name": "kamisama/monolog-init",
 	"type": "library",
-	"description": "Factory class that takes string arguments to build and return a Monolog handler",
+	"description": "Very basic and light Dependency Injector Container for Monolog",
 	"keywords": ["log"],
 	"homepage": "http://www.github.com/kamisama/monolog-init/",
 	"license": "MIT",
@@ -20,5 +20,8 @@
 		"email": "kami@kamisama.me",
 		"issues": "https://github.com/kamisama/monolog-init/issues",
 		"source": "https://github.com/kamisama/monolog-init"
-	}
+	},
+	"autoload": {
+        "psr-0": {"MonologInit": "src/"}
+    },
 }
