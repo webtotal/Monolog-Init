@@ -1,11 +1,15 @@
 {
-	"name": "kamisama/monolog-init",
+	"name": "webtotal/monolog-init",
 	"type": "library",
 	"description": "Very basic and light Dependency Injector Container for Monolog",
 	"keywords": ["log"],
 	"homepage": "http://www.github.com/kamisama/monolog-init/",
 	"license": "MIT",
 	"authors": [
+		{
+			"name": "Kamil Kowalski",
+			"email": "kamil@webtotal.no"
+		},
 		{
 			"name": "Wan Chen",
 			"email": "kami@kamisama.me",
@@ -17,11 +21,15 @@
 		"monolog/monolog": ">=1.2.0"
 	},
 	"support": {
-		"email": "kami@kamisama.me",
-		"issues": "https://github.com/kamisama/monolog-init/issues",
-		"source": "https://github.com/kamisama/monolog-init"
+		"email": "kamil@webtotal.no",
+		"issues": "https://github.com/webtotal/monolog-init/issues",
+		"source": "https://github.com/webtotal/monolog-init"
 	},
 	"autoload": {
         "psr-0": {"MonologInit": "src/"}
-    }
+    },
+    "conflict": {
+		"chrisboulton/php-resque": "*",
+		"kamisama/php-resque-ex": "*"
+	}
 }
