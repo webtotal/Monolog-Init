@@ -79,42 +79,46 @@ class MonologInit
      */
     protected function createHandlerInstance($className, $handlerArgs)
     {
+        $handlerArgsArray = explode(',', $handlerArgs);
+
         if (method_exists($this, 'init' . $className)) {
-            return call_user_func(array($this, 'init' . $className), explode(',', $handlerArgs));
+            return call_user_func(array($this, 'init' . $className), $handlerArgsArray);
         } else {
-            return null;
+            // Fallback to the default handler, but fail gracefully
+            try {
+                $instance = $this->defaultInit($className, $handlerArgsArray);
+            } catch(\Exception $e){
+                $instance = null;
+            }
+
+            return $instance;
         }
     }
 
-    public function initCubeHandler($args)
+    protected function defaultInit($className, $args)
     {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\CubeHandler');
+        $reflect = new \ReflectionClass('\Monolog\Handler\\' . $className);
         return $reflect->newInstanceArgs($args);
     }
 
-    public function initRotatingFileHandler($args)
+    /**
+     * Handle public class-specific init method from previous versions
+     */
+    public function __call($name, $args)
     {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\RotatingFileHandler');
-        return $reflect->newInstanceArgs($args);
-    }
+        if (substr($name, 0, 4) == 'init') {
+            $className = substr($name, 4);
 
-    public function initChromePHPHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\ChromePHPHandler');
-        return $reflect->newInstanceArgs($args);
-    }
+            // $args is now an array of arguments in an array of arguments - unwrap it
+            if(count($args) > 0){
+                $args = $args[0];
+            }
 
-    public function initSyslogHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\SyslogHandler');
-        return $reflect->newInstanceArgs($args);
-    }
-
-    public function initSocketHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\SocketHandler');
-        return $reflect->newInstanceArgs($args);
-    }
+            return $this->defaultInit($className, $args);
+        } else {
+            trigger_error('Undefined method ' . $name, E_USER_ERROR);
+        }
+    }    
 
     public function initMongoDBHandler($args)
     {
@@ -134,36 +138,6 @@ class MonologInit
         if (isset($args[0])) {
             $args[0] = explode(':', $args[0]);
         }
-        return $reflect->newInstanceArgs($args);
-    }
-
-    /**
-     *
-     * @since 0.1.1
-     */
-    public function initHipChatHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\HipChatHandler');
-        return $reflect->newInstanceArgs($args);
-    }
-
-    /**
-     *
-     * @since 0.1.1
-     */
-    public function initPushOverHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\PushOverHandler');
-        return $reflect->newInstanceArgs($args);
-    }
-
-    /**
-     *
-     * @since 0.1.1
-     */
-    public function initZendMonitorHandler($args)
-    {
-        $reflect  = new \ReflectionClass('\Monolog\Handler\ZendMonitorHandler');
         return $reflect->newInstanceArgs($args);
     }
 }
